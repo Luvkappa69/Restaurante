@@ -1,0 +1,45 @@
+<!-- Modal -->
+<div class="modal fade" id="editModal_pedidos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Pedido</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <form class="row g-3">
+
+
+            <div class="col-md-3">
+              <label for="idEdit" class="form-label">ID</label>
+              <input type="number" class="form-control" id="idEdit" disabled>
+            </div>
+            <div class="col-md-3">
+              <label for="nomeEdit" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="nomeEdit">
+            </div>
+            <div class="col-md-3">
+              <label for="precoEdit" class="form-label">Preço</label>
+              <input type="number" class="form-control" id="precoEdit">
+            </div>
+            <div class="col-md-3">
+                <label for="idTipoEdit" class="form-label">Tipo de Prato</label>
+                <select class="form-select select2" aria-label="Default select example" id="idTipoEdit"></select>
+            </div>
+            <div class="col-md-6">
+                <label for="fotoEdit" class="form-label">Foto</label>
+                <input type="file" class="form-control" id="fotoEdit">
+            </div>
+
+
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnGuardarEdit_pedidos">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>

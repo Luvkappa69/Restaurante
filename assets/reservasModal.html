@@ -1,0 +1,47 @@
+<!-- Modal -->
+<div class="modal fade" id="editModal_reserva" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Reserva</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <form class="row g-3">
+
+
+            <div class="row">
+              <div class="col-md-3">
+                <label for="dataEdit" class="form-label">Data</label>
+                <input type="date" class="form-control" id="dataEdit">
+              </div>
+              <div class="col-md-3">
+                <label for="horaEdit" class="form-label">Hora</label>
+                <input type="time" class="form-control" id="horaEdit">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label for="idClienteEdit" class="form-label">Cliente</label>
+              <select class="form-select " aria-label="Default select example" id="idClienteEdit"></select>
+          </div>
+          <div class="col-md-3">
+              <label for="idMesaEdit" class="form-label">Mesa</label>
+              <select class="form-select" aria-label="Default select example" id="idMesaEdit"></select>
+          </div>
+          <div class="col-md-4">
+            <label for="estadoEdit" class="form-label">Estado</label>
+            <select class="form-select" aria-label="Default select example" id="estadoEdit"></select>
+        </div>
+        <br><br><br>
+
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnGuardarEdit_reserva">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>

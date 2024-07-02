@@ -1,47 +1,39 @@
-# ************************************************************
-# Sequel Pro SQL dump
-# Versão 4541
-#
-# http://www.sequelpro.com/
-# https://github.com/sequelpro/sequelpro
-#
-# Host: 127.0.0.1 (MySQL 5.5.5-10.4.21-MariaDB)
-# Base de Dados: Restaurante
-# Tempo de Geração: 2024-07-02 07:19:49 +0000
-# ************************************************************
-
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               10.4.32-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Version:             12.7.0.6850
+-- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-# Dump da tabela clientes
-# ------------------------------------------------------------
+-- Dumping database structure for restaurante
+CREATE DATABASE IF NOT EXISTS `restaurante` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `restaurante`;
 
-DROP TABLE IF EXISTS `clientes`;
-
-CREATE TABLE `clientes` (
+-- Dumping structure for table restaurante.clientes
+CREATE TABLE IF NOT EXISTS `clientes` (
   `nif` int(11) NOT NULL,
   `nome` text NOT NULL DEFAULT '',
   `morada` text NOT NULL DEFAULT '',
   `telefone` int(11) DEFAULT NULL,
   `email` text DEFAULT NULL,
   PRIMARY KEY (`nif`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Dumping data for table restaurante.clientes: ~0 rows (approximately)
+DELETE FROM `clientes`;
 
-
-# Dump da tabela cozinha
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `cozinha`;
-
-CREATE TABLE `cozinha` (
+-- Dumping structure for table restaurante.cozinha
+CREATE TABLE IF NOT EXISTS `cozinha` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idPedido` int(11) NOT NULL DEFAULT 0,
   `idPrato` int(11) NOT NULL DEFAULT 0,
@@ -50,96 +42,63 @@ CREATE TABLE `cozinha` (
   KEY `FK_cozinha_pratos` (`idPrato`),
   CONSTRAINT `FK_cozinha_pedido` FOREIGN KEY (`idPedido`) REFERENCES `pedido` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_cozinha_pratos` FOREIGN KEY (`idPrato`) REFERENCES `pratos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Dumping data for table restaurante.cozinha: ~0 rows (approximately)
+DELETE FROM `cozinha`;
 
-
-# Dump da tabela estadopedido
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `estadopedido`;
-
-CREATE TABLE `estadopedido` (
+-- Dumping structure for table restaurante.estadopedido
+CREATE TABLE IF NOT EXISTS `estadopedido` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-LOCK TABLES `estadopedido` WRITE;
-/*!40000 ALTER TABLE `estadopedido` DISABLE KEYS */;
+-- Dumping data for table restaurante.estadopedido: ~4 rows (approximately)
+DELETE FROM `estadopedido`;
+INSERT INTO `estadopedido` (`id`, `descricao`) VALUES
+	(1, 'Em execução'),
+	(2, 'Servido'),
+	(3, 'Finalizado'),
+	(4, 'Iniciado');
 
-INSERT INTO `estadopedido` (`id`, `descricao`)
-VALUES
-	(1,'Em execução'),
-	(2,'Servido'),
-	(3,'Finalizado'),
-	(4,'Iniciado');
-
-/*!40000 ALTER TABLE `estadopedido` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump da tabela estadoreserva
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `estadoreserva`;
-
-CREATE TABLE `estadoreserva` (
+-- Dumping structure for table restaurante.estadoreserva
+CREATE TABLE IF NOT EXISTS `estadoreserva` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-LOCK TABLES `estadoreserva` WRITE;
-/*!40000 ALTER TABLE `estadoreserva` DISABLE KEYS */;
+-- Dumping data for table restaurante.estadoreserva: ~3 rows (approximately)
+DELETE FROM `estadoreserva`;
+INSERT INTO `estadoreserva` (`id`, `descricao`) VALUES
+	(1, 'Cancelada'),
+	(2, 'Terminada'),
+	(3, 'Provisória');
 
-INSERT INTO `estadoreserva` (`id`, `descricao`)
-VALUES
-	(1,'Cancelada'),
-	(2,'Terminada'),
-	(3,'Provisória');
-
-/*!40000 ALTER TABLE `estadoreserva` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump da tabela mesas
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `mesas`;
-
-CREATE TABLE `mesas` (
+-- Dumping structure for table restaurante.mesas
+CREATE TABLE IF NOT EXISTS `mesas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` text NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-LOCK TABLES `mesas` WRITE;
-/*!40000 ALTER TABLE `mesas` DISABLE KEYS */;
+-- Dumping data for table restaurante.mesas: ~10 rows (approximately)
+DELETE FROM `mesas`;
+INSERT INTO `mesas` (`id`, `nome`) VALUES
+	(1, 'Mesa1'),
+	(2, 'Mesa2'),
+	(3, 'Mesa3'),
+	(4, 'Mesa4'),
+	(5, 'Mesa5'),
+	(6, 'Mesa6'),
+	(7, 'Mesa7'),
+	(8, 'Mesa8'),
+	(9, 'Mesa9'),
+	(10, 'Mesa10');
 
-INSERT INTO `mesas` (`id`, `nome`)
-VALUES
-	(1,'Mesa1'),
-	(2,'Mesa2'),
-	(3,'Mesa3'),
-	(4,'Mesa4'),
-	(5,'Mesa5'),
-	(6,'Mesa6'),
-	(7,'Mesa7'),
-	(8,'Mesa8'),
-	(9,'Mesa9'),
-	(10,'Mesa10');
-
-/*!40000 ALTER TABLE `mesas` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump da tabela pedido
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `pedido`;
-
-CREATE TABLE `pedido` (
+-- Dumping structure for table restaurante.pedido
+CREATE TABLE IF NOT EXISTS `pedido` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idMesa` int(11) NOT NULL DEFAULT 0,
   `idEstado` int(11) NOT NULL DEFAULT 0,
@@ -148,16 +107,13 @@ CREATE TABLE `pedido` (
   KEY `FK_pedido_estadopedido` (`idEstado`),
   CONSTRAINT `FK_pedido_estadopedido` FOREIGN KEY (`idEstado`) REFERENCES `estadopedido` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_pedido_mesas` FOREIGN KEY (`idMesa`) REFERENCES `mesas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Dumping data for table restaurante.pedido: ~0 rows (approximately)
+DELETE FROM `pedido`;
 
-
-# Dump da tabela pratos
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `pratos`;
-
-CREATE TABLE `pratos` (
+-- Dumping structure for table restaurante.pratos
+CREATE TABLE IF NOT EXISTS `pratos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` text DEFAULT NULL,
   `preco` double DEFAULT NULL,
@@ -166,16 +122,13 @@ CREATE TABLE `pratos` (
   PRIMARY KEY (`id`),
   KEY `FK_pratos_tipoprato` (`idTipo`),
   CONSTRAINT `FK_pratos_tipoprato` FOREIGN KEY (`idTipo`) REFERENCES `tipoprato` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Dumping data for table restaurante.pratos: ~0 rows (approximately)
+DELETE FROM `pratos`;
 
-
-# Dump da tabela reserva
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `reserva`;
-
-CREATE TABLE `reserva` (
+-- Dumping structure for table restaurante.reserva
+CREATE TABLE IF NOT EXISTS `reserva` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idCliente` int(11) NOT NULL DEFAULT 0,
   `idMesa` int(11) NOT NULL DEFAULT 0,
@@ -189,41 +142,60 @@ CREATE TABLE `reserva` (
   CONSTRAINT `FK_reserva_clientes` FOREIGN KEY (`idCliente`) REFERENCES `clientes` (`nif`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_reserva_mesas` FOREIGN KEY (`idMesa`) REFERENCES `mesas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `reserva_ibfk_1` FOREIGN KEY (`estado`) REFERENCES `estadoreserva` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Dumping data for table restaurante.reserva: ~0 rows (approximately)
+DELETE FROM `reserva`;
 
-
-# Dump da tabela tipoprato
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `tipoprato`;
-
-CREATE TABLE `tipoprato` (
+-- Dumping structure for table restaurante.tipoprato
+CREATE TABLE IF NOT EXISTS `tipoprato` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` text NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-LOCK TABLES `tipoprato` WRITE;
-/*!40000 ALTER TABLE `tipoprato` DISABLE KEYS */;
+-- Dumping data for table restaurante.tipoprato: ~6 rows (approximately)
+DELETE FROM `tipoprato`;
+INSERT INTO `tipoprato` (`id`, `descricao`) VALUES
+	(1, 'sopa'),
+	(2, 'carne'),
+	(3, 'peixe'),
+	(4, 'vegetariano'),
+	(5, 'sobremesa'),
+	(6, 'entrada');
 
-INSERT INTO `tipoprato` (`id`, `descricao`)
-VALUES
-	(1,'sopa'),
-	(2,'carne'),
-	(3,'peixe'),
-	(4,'vegetariano'),
-	(5,'sobremesa'),
-	(6,'entrada');
+-- Dumping structure for table restaurante.tipouser
+CREATE TABLE IF NOT EXISTS `tipouser` (
+  `id_user` int(11) NOT NULL,
+  `descricao_user` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*!40000 ALTER TABLE `tipoprato` ENABLE KEYS */;
-UNLOCK TABLES;
+-- Dumping data for table restaurante.tipouser: ~2 rows (approximately)
+DELETE FROM `tipouser`;
+INSERT INTO `tipouser` (`id_user`, `descricao_user`) VALUES
+	(1, 'ADMIN'),
+	(2, 'USER');
 
+-- Dumping structure for table restaurante.utilizador
+CREATE TABLE IF NOT EXISTS `utilizador` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user` varchar(50) DEFAULT NULL,
+  `pw` varchar(100) DEFAULT NULL,
+  `idtuser` int(11) DEFAULT NULL,
+  `foto` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_utilizador_tipouser` (`idtuser`),
+  CONSTRAINT `FK_utilizador_tipouser` FOREIGN KEY (`idtuser`) REFERENCES `tipouser` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Dumping data for table restaurante.utilizador: ~0 rows (approximately)
+DELETE FROM `utilizador`;
+INSERT INTO `utilizador` (`id`, `user`, `pw`, `idtuser`, `foto`) VALUES
+	(2, 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1, 'src/img/user/user.webp');
 
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

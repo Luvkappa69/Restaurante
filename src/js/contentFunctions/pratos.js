@@ -57,37 +57,33 @@ function regista() {
 
 
 function listagem() {
-
   let dados = new FormData();
   dados.append('op', 2);
 
-
   $.ajax({
-    url: controllerPath,
-    method: "POST",
-    data: dados,
-    dataType: "html",
-    cache: false,
-    contentType: false,
-    processData: false,
+      url: controllerPath,
+      method: "POST",
+      data: dados,
+      dataType: "html",
+      cache: false,
+      contentType: false,
+      processData: false,
   })
-
-    .done(function (msg) {
-      
-      if ($.fn.DataTable.isDataTable('#tablePratosTable')) {
-        $('#tablePratosTable').DataTable().destroy();
+  .done(function (msg) {
+      if ($.fn.DataTable.isDataTable('#tablePratos')) {
+          $('#tablePratos').DataTable().destroy();
       }
-      $('#tablePratos').html(msg);
-      $('#tablePratosTable').DataTable({
-        "columnDefs": [{
-          "targets": '_all',
-          "defaultContent": ""
-        }]})
-    })
-
-    .fail(function (jqXHR, textStatus) {
+      $('#tablePratosContainer').html(msg);
+      $('#tablePratos').DataTable({
+          "columnDefs": [{
+              "targets": '_all',
+              "defaultContent": ""
+          }]
+      });
+  })
+  .fail(function (jqXHR, textStatus) {
       alert("Request failed: " + textStatus);
-    });
+  });
 }
 
 
@@ -274,10 +270,8 @@ function getSelect_tipoPratos() {
 
 $(function () {
   listagem();
-  $('#tablePratos').DataTable();
   $('#idTipo').select2();
-  getSelect_tipoPratos()
-  
+  getSelect_tipoPratos();
 });
 
 

@@ -3,20 +3,17 @@ let controllerPath = "src/controller/controllerPedidos.php"
 
 function regista() {
   if (
-    $('#nome').val() =="" ||
-    $('#preco').val() =="" ||
-    $('#idTipo').val() ==-1 ||
-    $('#foto').val() =="" 
+    $('#idMesa').val() == -1 ||
+    $('#idTipo').val() == -1
+
   ){
     return alerta("error", "Por favor preencha os campos ...");
 }
 
   let dados = new FormData();
-  dados.append('nome', $('#nome').val());
-  dados.append('preco', $('#preco').val());
+  dados.append('idMesa', $('#idMesa').val());
   dados.append('idTipo', $('#idTipo').val());
-  dados.append('foto', $('#foto').prop('files')[0]); //image 🖼️
-  
+
   dados.append('op', 1);
 
 
@@ -74,11 +71,11 @@ function listagem() {
 
     .done(function (msg) {
       
-      if ($.fn.DataTable.isDataTable('#tablePratosTable')) {
-        $('#tablePratosTable').DataTable().destroy();
+      if ($.fn.DataTable.isDataTable('#tablePedidosTable')) {
+        $('#tablePedidosTable').DataTable().destroy();
       }
-      $('#tablePratos').html(msg);
-      $('#tablePratosTable').DataTable({
+      $('#tablePedidos').html(msg);
+      $('#tablePedidosTable').DataTable({
         "columnDefs": [{
           "targets": '_all',
           "defaultContent": ""
@@ -99,7 +96,7 @@ function listagem() {
 
 
 
-
+//cation when removing items, PHP ERROR
 function remover(key) {
 
   let dados = new FormData();
@@ -238,12 +235,34 @@ function alerta(icon, msg) {
 
 
 
-function getSelect_tipoPratos() {
+function getSelect_mesa() {
 
   let dados = new FormData();
-  dados.append('op', 10);
+  dados.append('op', 7);
 
+  $.ajax({
+    url: controllerPath,
+    method: "POST",
+    data: dados,
+    dataType: "html",
+    cache: false,
+    contentType: false,
+    processData: false,
+  })
 
+    .done(function (msg) {
+      $('#idMesa').html(msg);
+      $('#idMesaEdit').html(msg);
+    })
+
+    .fail(function (jqXHR, textStatus) {
+      alert("Request failed: " + textStatus);
+    });
+}
+function getSelect_prato() {
+
+  let dados = new FormData();
+  dados.append('op', 8);
 
   $.ajax({
     url: controllerPath,
@@ -258,8 +277,6 @@ function getSelect_tipoPratos() {
     .done(function (msg) {
       $('#idTipo').html(msg);
       $('#idTipoEdit').html(msg);
-
-
     })
 
     .fail(function (jqXHR, textStatus) {
@@ -274,9 +291,11 @@ function getSelect_tipoPratos() {
 
 $(function () {
   listagem();
-  $('#tablePratos').DataTable();
+  $('#tablePedidos').DataTable();
   $('#idTipo').select2();
-  getSelect_tipoPratos()
+  $('#idMesa').select2();
+  getSelect_mesa()
+  getSelect_prato()
   
 });
 

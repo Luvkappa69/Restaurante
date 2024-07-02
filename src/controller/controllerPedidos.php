@@ -35,8 +35,12 @@ if($_POST['op'] == 1){
     );
     echo($resultado);
 }
-else if($_POST['op'] == 10){
-    $resultado = $prato -> getSelect_tipoPrato();
+else if($_POST['op'] == 7){
+    $resultado = $prato -> getSelect_mesa();
+    echo($resultado);
+}
+else if($_POST['op'] == 8){
+    $resultado = $prato -> getSelect_pratos();
     echo($resultado);
 }
 

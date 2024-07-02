@@ -76,7 +76,7 @@
 
         function lista() {
             global $conn;
-            $msg = "<table class='table' id='tablePratosTable'>";
+            $msg = "<table class='table' id='tablePratos'>";
             $msg .= "<thead>";
             $msg .= "<tr>";
         

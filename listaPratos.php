@@ -14,11 +14,13 @@
 </head>
 
 <body>
-<?php include_once 'assets/main/navbar.php' ?>
-
+    <!-- cation when removing items, PHP ERROR Pedidos-->
+    <h3>cation when removing items, PHP ERROR on Pedidos</h3>
+    <?php include_once 'assets/main/navbar.php' ?>
+    
     <div class="container">
         <div class="row mx-5 mb-5">
-            <div id="tablePratos"></div>
+            <div id="tablePratosContainer"></div>
         </div>
     </div>
     

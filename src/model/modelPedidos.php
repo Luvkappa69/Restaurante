@@ -375,22 +375,42 @@
         
 
 
-        function getSelect_tipoPrato(){
+        function getSelect_mesa(){
             global $conn;
             $msg = "<option value = '-1'>Escolha uma opção</option>";
             $stmt = "";
 
-
-            $stmt = $conn->prepare("SELECT * FROM tipoprato;");
+            $stmt = $conn->prepare("SELECT * FROM mesas;");
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
-                    $msg .= "<option value = '".$row['id']."'>".$row['descricao']."</option>";
+                    $msg .= "<option value = '".$row['id']."'>".$row['nome']."</option>";
                 }
             } else {
-                $msg .= "<option value = '-1'>Sem Tipos de Prato</option>";
+                $msg .= "<option value = '-1'>Sem Mesas</option>";
+            }
+            $stmt->close(); 
+            $conn->close();
+            
+            return $msg;
+        }
+        function getSelect_pratos(){
+            global $conn;
+            $msg = "<option value = '-1'>Escolha uma opção</option>";
+            $stmt = "";
+
+            $stmt = $conn->prepare("SELECT * FROM pratos;");
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $msg .= "<option value = '".$row['id']."'>".$row['nome']."</option>";
+                }
+            } else {
+                $msg .= "<option value = '-1'>Sem Pratos</option>";
             }
             $stmt->close(); 
             $conn->close();

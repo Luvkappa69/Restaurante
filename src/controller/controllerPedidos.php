@@ -1,47 +1,48 @@
 <?php
 require_once '../model/modelPedidos.php';
 
-$prato =  new Pedido();
+$execute =  new Pedido();
 
 if($_POST['op'] == 1){
-    $resultado = $prato -> regista(
-                                                $_POST['nome'], 
-                                                $_POST['preco'], 
-                                                $_POST['idTipo'], 
-                                                $_FILES
-
+    $resultado = $execute -> regista(
+                                                $_POST['idMesa'], 
+                                                $_POST['idTipo']
     );
     echo($resultado);
 }else if($_POST['op'] == 2){
-    $resultado = $prato -> lista();
+    $resultado = $execute -> lista();
     echo($resultado);
 }else if($_POST['op'] == 3){
-    $resultado = $prato -> remove(
-                                                $_POST['id']                                               
+
+    echo "A remover [pedido:".$_POST['pedidoID']." + cozinha:".$_POST['cozinhaID']."] ->";
+    $resultado = $execute -> remove(
+                                                $_POST['pedidoID'] , //this is a loop inside php with variable names,                                             
+                                                $_POST['cozinhaID'] //ref:php table on                                               
     );
     echo($resultado);
-}else if($_POST['op'] == 4){
+}
+else if($_POST['op'] == 4){
     $resultado = $prato -> getDados(
-                                                $_POST['id']                                               
+                                    $_POST['pedidoID'], 
+                                    $_POST['cozinhaID']                                              
     );
     echo($resultado);
-}else if($_POST['op'] == 5){
-    $resultado = $prato -> edita(
-                                                $_POST['nome'], 
-                                                $_POST['preco'], 
-                                                $_POST['idTipo'], 
-                                                $_FILES, 
-                                                $_POST['old_key']
+}
+else if($_POST['op'] == 5){//guarda
+    $resultado = $execute -> edita(
+                                                $_POST['pedidoID'], 
+                                                $_POST['cozinhaID']
     );
     echo($resultado);
 }
 else if($_POST['op'] == 7){
-    $resultado = $prato -> getSelect_mesa();
+    $resultado = $execute -> getSelect_mesa();
     echo($resultado);
 }
 else if($_POST['op'] == 8){
-    $resultado = $prato -> getSelect_pratos();
+    $resultado = $execute -> getSelect_pratos();
     echo($resultado);
 }
+
 
 ?>

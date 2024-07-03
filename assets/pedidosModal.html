@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="editModal_pedidos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -11,10 +11,31 @@
           <form class="row g-3">
 
 
-            <div class="col-md-3">
-              <label for="id" class="form-label">Mesa</label>
+            <div class="col-md-6">
+              <h2 for="id" class="form-label">Número do Pedido</h2>
               <select class="form-select select2" aria-label="Default select example" id="id"></select>
-            </div>
+          </div>
+            <div class="col-md-6">
+              <h2 for="idMesaEdit" class="form-label">Mesa</h2>
+              <select class="form-select select2" aria-label="Default select example" id="idMesaEdit"></select>
+          </div>
+
+
+          <hr>
+
+
+          <h3>cozinha:</h3>
+          <div class="col-md-6">
+              <label for="estadoEdit" class="form-label">Estado</label>
+              <select class="form-select select2" aria-label="Default select example" id="estadoEdit"></select>
+          </div>
+          <div class="col-md-6">
+              <label for="idTipoEdit" class="form-label">Prato</label>
+              <select class="form-select select2" aria-label="Default select example" id="idTipoEdit"></select>
+          </div>
+          
+         
+          <hr>
 
 
 
@@ -22,7 +43,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" id="btnGuardarEdit_pedidos">Guardar</button>
+          <button type="button" class="btn btn-primary" id="btnGuardarEdit">Guardar</button>
         </div>
       </div>
     </div>

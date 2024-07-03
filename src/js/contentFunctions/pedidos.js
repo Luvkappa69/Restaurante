@@ -96,15 +96,18 @@ function listagem() {
 
 
 
-//cation when removing items, PHP ERROR
-function remover(key) {
-
+ 
+function remover(pedidoID, cozinhaID) {
   let dados = new FormData();
-  dados.append('op', 3);
-  dados.append('id', key);
+  dados.append('op', 3); // Assuming 'op' is an operation code for removal
 
+  // Add pedidoID and cozinhaID to FormData
+  dados.append('pedidoID', pedidoID); 
+  dados.append('cozinhaID', cozinhaID); 
+
+  // Replace 'controllerPath' with your actual PHP controller endpoint
   $.ajax({
-    url: controllerPath,
+    url: controllerPath, // Example endpoint
     method: "POST",
     data: dados,
     dataType: "html",
@@ -112,15 +115,14 @@ function remover(key) {
     contentType: false,
     processData: false,
   })
-
-    .done(function (msg) {
-      alerta("success", msg);
-      listagem();
-    })
-
-    .fail(function (jqXHR, textStatus) {
-      alert("Request failed: " + textStatus);
-    });
+  .done(function (msg) {
+    alerta("success", msg);
+    // Perform any additional actions after successful removal
+    listagem(); // Assuming listagem() updates the UI after removal
+  })
+  .fail(function (jqXHR, textStatus) {
+    alert("Request failed: " + textStatus);
+  });
 }
 
 
@@ -132,11 +134,13 @@ function remover(key) {
 
 
 
-function edita(key) {
+//edit pedido+cozinha
+function edita(pedidoID,cozinhaID) {
 
   let dados = new FormData();
   dados.append('op', 4);
-  dados.append('id', key);
+  dados.append('pedidoID', pedidoID); 
+  dados.append('cozinhaID', cozinhaID); 
 
   $.ajax({
     url: controllerPath,
@@ -150,7 +154,7 @@ function edita(key) {
 
     .done(function (msg) {
       let obj = JSON.parse(msg);
-
+      console.log(obj)
       $('#idEdit').val(obj.id);
       $('#nomeEdit').val(obj.nome);
       $('#precoEdit').val(obj.preco);
@@ -177,15 +181,12 @@ function guardaEdit(key) {
 
   let dados = new FormData();
 
-  dados.append('nome', $('#nomeEdit').val());
-  dados.append('preco', $('#precoEdit').val());
-  dados.append('idTipo', $('#idTipoEdit').val());
-  dados.append('foto', $('#fotoEdit').prop('files')[0]); //image 🖼️
-
+  dados.append('pedidoID', $('#idMesaEdit').val());
+  dados.append('cozinhaID', $('#idTipoEdit').val());
 
   dados.append('old_key', key);
 
-  dados.append('op', 5);
+  dados.append('op', 6);
 
 
   $.ajax({

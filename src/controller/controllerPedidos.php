@@ -22,7 +22,7 @@ if($_POST['op'] == 1){
     echo($resultado);
 }
 else if($_POST['op'] == 4){
-    $resultado = $prato -> getDados(
+    $resultado = $execute -> getDados(
                                     $_POST['pedidoID'], 
                                     $_POST['cozinhaID']                                              
     );
@@ -41,6 +41,10 @@ else if($_POST['op'] == 7){
 }
 else if($_POST['op'] == 8){
     $resultado = $execute -> getSelect_pratos();
+    echo($resultado);
+}
+else if($_POST['op'] == 9){
+    $resultado = $execute -> getSelect_estado();
     echo($resultado);
 }
 

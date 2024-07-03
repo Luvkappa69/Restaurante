@@ -155,14 +155,14 @@ function edita(pedidoID,cozinhaID) {
     .done(function (msg) {
       let obj = JSON.parse(msg);
       console.log(obj)
-      $('#idEdit').val(obj.id);
-      $('#nomeEdit').val(obj.nome);
-      $('#precoEdit').val(obj.preco);
-      $('#idTipoEdit').val(obj.idTipo);
+      $('#idEdit').val(obj[0].id);
+      $('#idMesaEdit').val(obj[0].idMesa);
+      $('#estadoEdit').val(obj[0].idEstado);
+      $('#idTipoEdit').val(obj[1].idPrato);
 
   
-      $('#editModal_cliente').modal('toggle');
-      $('#btnGuardarEdit_cliente').attr('onclick', 'guardaEdit_cliente(' + obj.nif + ')')
+      $('#editModal').modal('toggle');
+      $('#btnGuardarEdit').attr('onclick', 'guardaEdit(' + obj[0].id + ')')
     })
  
     .fail(function (jqXHR, textStatus) {
@@ -284,6 +284,30 @@ function getSelect_prato() {
       alert("Request failed: " + textStatus);
     });
 }
+function getSelect_estado() {
+
+  let dados = new FormData();
+  dados.append('op', 9);
+
+  $.ajax({
+    url: controllerPath,
+    method: "POST",
+    data: dados,
+    dataType: "html",
+    cache: false,
+    contentType: false,
+    processData: false,
+  })
+
+    .done(function (msg) {
+      $('#idTipo').html(msg);
+      $('#estadoEdit').html(msg);
+    })
+
+    .fail(function (jqXHR, textStatus) {
+      alert("Request failed: " + textStatus);
+    });
+}
 
 
 
@@ -297,6 +321,7 @@ $(function () {
   $('#idMesa').select2();
   getSelect_mesa()
   getSelect_prato()
+  getSelect_estado()
   
 });
 

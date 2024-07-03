@@ -302,27 +302,7 @@
             
             return $msg;
         }
-        function getSelect_estado(){
-            global $conn;
-            $msg = "<option value = '-1'>Escolha uma opção</option>";
-            $stmt = "";
-
-            $stmt = $conn->prepare("SELECT * FROM estadoreserva;");
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $msg .= "<option value = '".$row['id']."'>".$row['descricao']."</option>";
-                }
-            } else {
-                $msg .= "<option value = '-1'>Sem Estados</option>";
-            }
-            $stmt->close(); 
-            $conn->close();
-            
-            return $msg;
-        }
+       
         
 
 

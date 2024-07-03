@@ -200,19 +200,21 @@
             $stmt1 = $conn->prepare("SELECT * FROM pedido WHERE id = ?");
             $stmt1->bind_param("i", $pedidoID);
             $stmt1->execute();
-            $result = $stmt->get_result();
+            $result = $stmt1->get_result();
             $row1 = $result->fetch_assoc();
             $stmt1->close();
+
     
-            $stmt2 = $conn->prepare("SELECT * FROM cozinha WHERE idPedido = ?");
+            $stmt2 = $conn->prepare("SELECT * FROM cozinha WHERE id = ?");
             $stmt2->bind_param("i", $cozinhaID);
             $stmt2->execute();
-            $result = $stmt->get_result();
+            $result = $stmt2->get_result();
             $row2 = $result->fetch_assoc();
             $stmt2->close();
 
+
             $row =array($row1, $row2);
-           
+
             
 
             
@@ -230,24 +232,24 @@
 
 
 
-        function getDados($codigo) {
-            global $conn;
+        // function getDados($codigo) {
+        //     global $conn;
 
 
-            $stmt = $conn->prepare("SELECT * FROM pratos WHERE id = ?");
-            $stmt->bind_param("i", $codigo);
-            $stmt->execute();
+        //     $stmt = $conn->prepare("SELECT * FROM pratos WHERE id = ?");
+        //     $stmt->bind_param("i", $codigo);
+        //     $stmt->execute();
     
-            $result = $stmt->get_result();
-            $row = $result->fetch_assoc();
+        //     $result = $stmt->get_result();
+        //     $row = $result->fetch_assoc();
 
     
-            $stmt->close();
-            $conn->close();
+        //     $stmt->close();
+        //     $conn->close();
 
             
-            return json_encode($row);  
-        }
+        //     return json_encode($row);  
+        // }
         
         
 
@@ -359,6 +361,27 @@
                 }
             } else {
                 $msg .= "<option value = '-1'>Sem Pratos</option>";
+            }
+            $stmt->close(); 
+            $conn->close();
+            
+            return $msg;
+        }
+        function getSelect_estado(){
+            global $conn;
+            $msg = "<option value = '-1'>Escolha uma opção</option>";
+            $stmt = "";
+
+            $stmt = $conn->prepare("SELECT * FROM estadopedido;");
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $msg .= "<option value = '".$row['id']."'>".$row['descricao']."</option>";
+                }
+            } else {
+                $msg .= "<option value = '-1'>Sem Estados</option>";
             }
             $stmt->close(); 
             $conn->close();

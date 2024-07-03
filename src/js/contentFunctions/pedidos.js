@@ -154,7 +154,7 @@ function edita(pedidoID,cozinhaID) {
 
     .done(function (msg) {
       let obj = JSON.parse(msg);
-      console.log(obj)
+
       $('#idEdit').val(obj[0].id);
       $('#idMesaEdit').val(obj[0].idMesa);
       $('#estadoEdit').val(obj[0].idEstado);
@@ -162,7 +162,7 @@ function edita(pedidoID,cozinhaID) {
 
   
       $('#editModal').modal('toggle');
-      $('#btnGuardarEdit').attr('onclick', 'guardaEdit(' + obj[0].id + ')')
+      $('#btnGuardarEdit').attr('onclick', 'guardaEdit(' + obj[0].id + ', ' + obj[1].idPedido + ')')
     })
  
     .fail(function (jqXHR, textStatus) {
@@ -174,19 +174,75 @@ function edita(pedidoID,cozinhaID) {
 
 
 
-
-
-
-function guardaEdit(key) {
+function guardaEdit(pedidoID, cozinhaID) {
 
   let dados = new FormData();
 
-  dados.append('pedidoID', $('#idMesaEdit').val());
-  dados.append('cozinhaID', $('#idTipoEdit').val());
+  dados.append('mesa', $('#idMesaEdit').val());
+  dados.append('estado', $('#estadoEdit').val());
+  dados.append('prato', $('#idTipoEdit').val());
+  dados.append('old_pedidoID_key', pedidoID);
+  dados.append('old_cozinhaID_key', cozinhaID);
+  dados.append('op', 5);
 
-  dados.append('old_key', key);
 
-  dados.append('op', 6);
+  $.ajax({
+    url: controllerPath,
+    method: "POST",
+    data: dados,
+    dataType: "html",
+    cache: false,
+    contentType: false,
+    processData: false,
+  })
+
+    .done(function (msg) {
+      alerta("success", msg);
+      listagem();
+    })
+
+    .fail(function (jqXHR, textStatus) {
+      alert("Request failed: " + textStatus);
+    });
+
+}
+
+
+function getFatura(pedidoID, cozinhaID) {
+  let dados = new FormData();
+  dados.append('cozinhaID', cozinhaID);
+  dados.append('op', 11);
+  $.ajax({
+    url: controllerPath,
+    method: "POST",
+    data: dados,
+    dataType: "html",
+    cache: false,
+    contentType: false,
+    processData: false,
+  })
+    .done(function (msg) {
+      let obj = JSON.parse(msg);
+      $('#mesaFatura').val(pedidoID)
+      $('#precoFatura').val(obj[1].preco)
+      $('#faturaModal').modal('toggle');
+      console.log("error", obj)
+      $('#btnGuardarFatura').attr('onclick', 'guardaFatura(' + obj[0].idPedido + ', ' + obj[1].preco + ')')
+    })
+
+    .fail(function (jqXHR, textStatus) {
+      alert("Request failed: " + textStatus);
+    });
+}
+
+
+function guardaFatura(pedidoID, preco) {
+
+  let dados = new FormData();
+
+  dados.append('pedido', pedidoID);
+  dados.append('preco', preco);
+  dados.append('op', 12);
 
 
   $.ajax({
@@ -308,6 +364,29 @@ function getSelect_estado() {
       alert("Request failed: " + textStatus);
     });
 }
+function getSelect_clientes() {
+
+  let dados = new FormData();
+  dados.append('op', 10);
+
+  $.ajax({
+    url: controllerPath,
+    method: "POST",
+    data: dados,
+    dataType: "html",
+    cache: false,
+    contentType: false,
+    processData: false,
+  })
+
+    .done(function (msg) {
+      $('#clienteFatura').html(msg);
+    })
+
+    .fail(function (jqXHR, textStatus) {
+      alert("Request failed: " + textStatus);
+    });
+}
 
 
 
@@ -322,6 +401,7 @@ $(function () {
   getSelect_mesa()
   getSelect_prato()
   getSelect_estado()
+  getSelect_clientes()
   
 });
 

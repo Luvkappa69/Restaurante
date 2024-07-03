@@ -23,6 +23,7 @@
     </div>
     
     <?php include_once 'assets/pedidosModal.html' ?>
+    <?php include_once 'assets/faturaModal.html' ?>
 </body>
 </html>
 <?php 

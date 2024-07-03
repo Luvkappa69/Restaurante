@@ -11,7 +11,7 @@ class Login{
         $msg = "";
         $state = false;
 
-        $folder = hash('sha256', $username);
+        $folder = md5(hash('sha256', $username));
         $upload = $this -> uploads(
             $foto,                    //Content
             'foto',            //Js into PHP variable name

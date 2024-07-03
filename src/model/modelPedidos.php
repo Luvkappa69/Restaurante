@@ -74,6 +74,7 @@
             $msg .= "<th>Estado</th>";
             $msg .= "<th>Remover</th>";
             $msg .= "<th>Editar</th>";
+            $msg .= "<th>Faturar</th>";
         
             $msg .= "</tr>";
             $msg .= "</thead>";
@@ -108,6 +109,7 @@
                         $msg .= "<td>" . $row['descEstado'] . "</td>";
                         $msg .= "<td><button type='button' class='btn btn-danger' onclick='remover(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Remover</button></td>";
                         $msg .= "<td><button type='button' class='btn btn-primary' onclick='edita(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Editar</button></td>";
+                        $msg .= "<td><button type='button' class='btn btn-secondary' onclick='getFatura(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Faturar</button></td>";
                         $msg .= "</tr>";
                     }
                 } else {
@@ -192,18 +194,15 @@
 
         function getDados($pedidoID,$cozinhaID) {
             global $conn;
-
             $stmt1 = "";
             $stmt2 = "";
         
-
             $stmt1 = $conn->prepare("SELECT * FROM pedido WHERE id = ?");
             $stmt1->bind_param("i", $pedidoID);
             $stmt1->execute();
             $result = $stmt1->get_result();
             $row1 = $result->fetch_assoc();
             $stmt1->close();
-
     
             $stmt2 = $conn->prepare("SELECT * FROM cozinha WHERE id = ?");
             $stmt2->bind_param("i", $cozinhaID);
@@ -212,54 +211,143 @@
             $row2 = $result->fetch_assoc();
             $stmt2->close();
 
-
             $row =array($row1, $row2);
 
-            
+            return json_encode($row);  
+        }
 
-            
+
+        function getFaturaPratoCozinha($cozinhaID) {
+            global $conn;
+            $stmt1 = "";
+            $stmt2 = "";
+        
+            $stmt1 = $conn->prepare("SELECT * FROM cozinha WHERE idPedido = ?");
+            $stmt1->bind_param("i", $cozinhaID);
+            $stmt1->execute();
+            $result = $stmt1->get_result();
+            $row1 = $result->fetch_assoc();
+            $stmt1->close();
+
+
+            $stmt2 = $conn->prepare("SELECT * FROM pratos WHERE id = ?");
+            $stmt2->bind_param("i", $row1['idPrato']);
+            $stmt2->execute();
+            $result = $stmt2->get_result();
+            $row2 = $result->fetch_assoc();
+            $stmt2->close();
+        
+            $row =array($row1, $row2);
             return json_encode($row);  
         }
         
         
+        function emiteFatura($pedido, $preco){
+            global $conn;
+            $stmt1 = "";
+            $stmt2 = "";
+            //get estado pedido
+            $stmt1 = $conn->prepare("SELECT * FROM pedido WHERE id = ?");
+            $stmt1->bind_param("i", $pedido);
+            $stmt1->execute();
+            $result = $stmt1->get_result();
+            $row1 = $result->fetch_assoc();
+            $stmt1->close();
+
+            $presetEstado= 3;
+            $stmt2 = $conn->prepare("UPDATE pedido SET pedido.idEstado = ? WHERE id = ?");
+            $stmt2->bind_param("ii",$presetEstado, $row1['id']);
+            $stmt2->execute();
+            $result = $stmt2->get_result();
+            $row2 = $result->fetch_assoc();
+            $stmt2->close();
+
+
+            $stmt3 = $conn->prepare("SELECT * FROM mesas WHERE idMesa = ?");
+            $stmt3->bind_param("i", $row2['idMesa']);
+            $stmt3->execute();
+            $result = $stmt3->get_result();
+            $row3 = $result->fetch_assoc();
+            $stmt2->close();
+
+
+            $content =  "*************** FATURA ***************\n";
+            $content .= "**************** MESA ****************\n";
+            $content .= "          ".$row3['nome']."          \n";
+
+
+            $folderName = "faturas";
+            $fileName = md5($row1['idPrato']. date("YmdHis"));
+            $fileRoute= "$folderName/$fileName";
+
+            if(!file_exists($folderName)) {
+                mkdir($folderName,0777, true);
+                echo "Folder Created";
+            }else {
+                echo "Cannot create folder";
+                return 0;
+            }
+
+            if(file_put_contents($fileRoute, $content) !== false) {
+                echo "Fatura Emitida";
+            } else {
+                echo "Erro na Emissao da Fatura";
+            }
+            echo $fileRoute;
+
+        }
+
+
+        function wFatura($fileName , $content){
+            $folderName = "faturas";
+            $fileRoute= "$folderName/$fileName";
+
+            if(!file_exists($folderName)) {
+                mkdir($folderName,0777, true);
+            }else {
+                echo "Cannot create folder";
+                return 0;
+            }
+
+            if(file_put_contents($fileRoute, $content) !== false) {
+                echo "Fatura Emitida";
+            } else {
+                echo "Erro na Emissao da Fatura";
+            }
+
+        }
 
 
 
 
 
 
-
-
-
-
-                function edita(
-        $idCliente,
-        $idMesa,
-        $data,
-        $hora,
-        $estado,
-        $oldKEY) {
+            function edita(
+                $mesa,
+                $estado,
+                $prato,
+                $old_pedidoID_key,
+                $old_cozinhaID_key
+            ) {
             global $conn;
 
             $msg = "";
             $stmt = "";
 
-            $stmt = $conn->prepare("UPDATE reserva SET 
-                                    idCliente = ?,
-                                    idMesa = ?,
-                                    data = ?,
-                                    hora = ?,
-                                    estado = ?
-                                    WHERE id = ? ;");
+            $stmt = $conn->prepare("UPDATE pedido, cozinha SET 
+                                    pedido.idMesa = ?,
+                                    pedido.idEstado = ?,
+                                    cozinha.idPrato = ?
+                                    WHERE pedido.id = ? and cozinha.idPedido = ?;");
 
             if ($stmt) { 
-                $stmt->bind_param("iissii",
-                $idCliente,
-                $idMesa,
-                $data,
-                $hora,
-                $estado,
-                $oldKEY);
+                $stmt->bind_param("iiiii",
+                                        $mesa,
+                                        $estado,
+                                        $prato,
+                                        $old_pedidoID_key,
+                                        $old_cozinhaID_key
+                                    );
 
                 if ($stmt->execute()) {
                     $msg = "Edição efetuada";
@@ -348,6 +436,14 @@
             $current .= $texto."\n";
             file_put_contents($file, $current);
         }
+
+
+
+
+
+
+        
+
         
 
 
@@ -404,7 +500,38 @@
 
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
-                    $msg .= "<option value = '".$row['id']."'>".$row['descricao']."</option>";
+                    if ($row['id'] == 3){
+                        
+                    }else{
+                        $msg .= "<option value = '".$row['id']."'>".$row['descricao']."</option>";
+                    }
+                    
+                }
+            } else {
+                $msg .= "<option value = '-1'>Sem Estados</option>";
+            }
+            $stmt->close(); 
+            $conn->close();
+            
+            return $msg;
+        }
+        function getSelect_clientes(){
+            global $conn;
+            $msg = "<option value = '-1'>Escolha uma opção</option>";
+            $stmt = "";
+
+            $stmt = $conn->prepare("SELECT * FROM clientes;");
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    if ($row['id'] == 3){
+                        
+                    }else{
+                        $msg .= "<option value = '".$row['nif']."'>".$row['nome']." - ".$row['nif']." </option>";
+                    }
+                    
                 }
             } else {
                 $msg .= "<option value = '-1'>Sem Estados</option>";

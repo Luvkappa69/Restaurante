@@ -30,12 +30,16 @@ else if($_POST['op'] == 4){
 }
 else if($_POST['op'] == 5){//guarda
     $resultado = $execute -> edita(
-                                                $_POST['pedidoID'], 
-                                                $_POST['cozinhaID']
+                                                $_POST['mesa'], 
+                                                $_POST['estado'], 
+                                                $_POST['prato'], 
+                                                $_POST['old_pedidoID_key'], 
+                                                $_POST['old_cozinhaID_key']
     );
     echo($resultado);
 }
 else if($_POST['op'] == 7){
+    
     $resultado = $execute -> getSelect_mesa();
     echo($resultado);
 }
@@ -45,6 +49,21 @@ else if($_POST['op'] == 8){
 }
 else if($_POST['op'] == 9){
     $resultado = $execute -> getSelect_estado();
+    echo($resultado);
+}
+else if($_POST['op'] == 10){
+    $resultado = $execute -> getSelect_clientes();
+    echo($resultado);
+}
+else if($_POST['op'] == 11){
+    $resultado = $execute -> getFaturaPratoCozinha($_POST['cozinhaID']);
+    echo($resultado);
+}
+else if($_POST['op'] == 11){
+    $resultado = $execute -> emiteFatura(
+                                            $_POST['pedido'], 
+                                            $_POST['preco']
+                                        );
     echo($resultado);
 }
 

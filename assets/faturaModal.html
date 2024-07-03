@@ -1,0 +1,39 @@
+<!-- Modal -->
+<div class="modal fade" id="faturaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Emitir Fatura</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <form class="row g-3">
+
+
+            <div class="col-md-3">
+              <label for="clienteFatura" class="form-label">Cliente</label>
+              <select class="form-select select2" aria-label="Default select example" id="clienteFatura"></select>
+          </div>
+            <div class="col-md-3">
+              <label for="mesaFatura" class="form-label">Mesa</label>
+              <input disabled type="number" class="form-control" id="mesaFatura">
+            </div>
+
+            <hr>
+
+            <div class="col-md-3">
+              <label for="precoFatura" class="form-label">Preço</label>
+              <input disabled type="number" class="form-control" id="precoFatura">
+            </div>
+
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnGuardarFatura">Faturar</button>
+        </div>
+      </div>
+    </div>
+  </div>

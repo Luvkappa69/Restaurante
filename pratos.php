@@ -48,7 +48,7 @@
             <button type="button" class="btn btn-primary" onclick="regista()">Registar</button>
           </div>
         </form>
-      </div>
+                </div>
     </div>
 
     

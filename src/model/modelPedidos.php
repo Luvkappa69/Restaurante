@@ -214,42 +214,55 @@
         }
 
 
-        function getFaturaPratoCozinha($cozinhaID) {
+        function getFaturaPratoCozinha($cozinhaID,$pedidoID) {
             global $conn;
-            $stmt1 = "";
-            $stmt2 = "";
-        
-            $stmt1 = $conn->prepare("SELECT * FROM cozinha WHERE idPedido = ?");
-            $stmt1->bind_param("i", $cozinhaID);
-            $stmt1->execute();
-            $result = $stmt1->get_result();
-            $row1 = $result->fetch_assoc();
-            $stmt1->close();
+
+            $stmt_ForPreco = $conn->prepare("SELECT 
+                    pedido.*, 
+                    pedido.id as pedidoID, 
+                    cozinha.id as cozinhaID,
+                    cozinha.idPrato as pratoID,
+                    mesas.nome as nomeMesa, 
+                    estadopedido.descricao as descEstado,
+                    pratos.preco as precoPrato
+                FROM 
+                    pedido, 
+                    cozinha, 
+                    mesas, 
+                    estadopedido,
+                    pratos
+                WHERE 
+                    pedido.idMesa = mesas.id 
+                    AND pedido.idEstado = estadopedido.id
+                    AND cozinha.idPedido = pedido.id
+                    AND cozinha.idPrato = pratos.id
+                    AND pedido.id = ?");
 
 
-            $stmt2 = $conn->prepare("SELECT * FROM pratos WHERE id = ?");
-            $stmt2->bind_param("i", $row1['idPrato']);
-            $stmt2->execute();
-            $result = $stmt2->get_result();
-            $row2 = $result->fetch_assoc();
-            $stmt2->close();
-        
-            $row =array($row1, $row2);
-            return json_encode($row);  
+            $stmt_ForPreco->bind_param("i", $pedidoID);
+            $stmt_ForPreco->execute();
+            $result_cozinha = $stmt_ForPreco->get_result();
+            $row_cozinha = $result_cozinha->fetch_assoc();
+            $preco = $row_cozinha['precoPrato'];
+            $stmt_ForPreco->close();
+             
+            return json_encode($preco);  
         }
         
         
-        function emiteFatura($pedido, $preco){
+        function emiteFatura($cozinhaID,$pedidoID, $preco){
             global $conn;
             $stmt1 = "";
             $stmt2 = "";
             //get estado pedido
             $stmt1 = $conn->prepare("SELECT * FROM pedido WHERE id = ?");
-            $stmt1->bind_param("i", $pedido);
+            $stmt1->bind_param("i", $pedidoID);
             $stmt1->execute();
             $result = $stmt1->get_result();
             $row1 = $result->fetch_assoc();
             $stmt1->close();
+            echo("Modificação de estado :".$row1['idEstado'] . "para >>> Finalizado");
+
 
             $presetEstado= 3;
             $stmt2 = $conn->prepare("UPDATE pedido SET pedido.idEstado = ? WHERE idEstado = ? and pedido.id= ?");
@@ -266,29 +279,68 @@
             $stmt3->close();
 
 
-            $content =  "*************** FATURA ***************\n";
-            $content .= "**************** MESA ****************\n";
-            $content .= "          ".$row3['nome']."          \n";
+            $stmt4 = $conn->prepare("SELECT 
+                    pedido.*, 
+                    pedido.id as pedidoID, 
+                    cozinha.id as cozinhaID,
+                    cozinha.idPrato as pratoID,
+                    mesas.nome as nomeMesa, 
+                    estadopedido.descricao as descEstado,
+                    pratos.preco as precoPrato
+                FROM 
+                    pedido, 
+                    cozinha, 
+                    mesas, 
+                    estadopedido,
+                    pratos
+                WHERE 
+                    pedido.idMesa = mesas.id 
+                    AND pedido.idEstado = estadopedido.id
+                    AND cozinha.idPedido = pedido.id
+                    AND cozinha.idPrato = pratos.id
+                    AND pedido.id = ?;");
+
+            $stmt4->bind_param("i", $pedidoID);
+            $stmt4->execute();
+            $result = $stmt4->get_result();
+            $row4 = $result->fetch_assoc();
+            $stmt4->close();
 
 
-            $folderName = "faturas";
-            $fileName = md5($row1['id']. date("YmdHis"));
-            $fileRoute= "../$folderName/$fileName";
+            $content = "*************** FATURA ***************\n";
+            $content .= "*************** MESA ***************\n";
+            $content .= "                ".$row3['nome'] . "\n";
+            $content .= "*************** Pedido **************\n";
+            $content .= "                ".$row1['id'] . "\n";
+            $content .= "*************** Preco ***************\n";
+            $content .= "                ".$row4['precoPrato'] . "\n";
 
-            if(!file_exists($folderName)) {
-                mkdir($folderName,0777, true);
-                echo "Folder Created";
-            }else {
-                echo "Cannot create folder";
-                return 0;
+
+            
+            $folderName = '../faturas';
+            $fileName = md5($row1['id'] . date("YmdHis")) . ".txt"; 
+            $fileRoute = $folderName . '/' . $fileName;
+
+            if (!file_exists($folderName)) {
+                if (mkdir($folderName, 0777, true)) {
+                    echo "Folder Created";
+                } else {
+                    echo "Failed to create folder";
+                    exit; 
+                }
             }
 
-            if(file_put_contents($fileRoute, $content) !== false) {
+            if (file_put_contents($fileRoute, $content) !== false) {
                 echo "Fatura Emitida";
             } else {
                 echo "Erro na Emissao da Fatura";
+                $error = error_get_last();
+                echo "Error details: " . $error['message'];
             }
-            echo $fileRoute;
+
+            echo "File path: " . $fileRoute;
+
+
 
         }
 
@@ -422,7 +474,7 @@
         }
         
         function wFicheiro($texto){
-            $file = '../prato_Upload_logs.txt';
+            $file = '..//prato_Upload_logs.txt';
             if (file_exists($file)) {
                 $current = file_get_contents($file);
             } else {

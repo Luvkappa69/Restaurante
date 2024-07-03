@@ -56,12 +56,16 @@ else if($_POST['op'] == 10){
     echo($resultado);
 }
 else if($_POST['op'] == 11){
-    $resultado = $execute -> getFaturaPratoCozinha($_POST['cozinhaID']);
+    $resultado = $execute -> getFaturaPratoCozinha(
+                                                    $_POST['cozinhaID'], 
+                                                    $_POST['pedidoID']
+                                                );
     echo($resultado);
 }
 else if($_POST['op'] == 12){
     $resultado = $execute -> emiteFatura(
-                                            $_POST['pedido'], 
+                                            $_POST['cozinhaID'], 
+                                            $_POST['pedidoID'], 
                                             $_POST['preco']
                                         );
     echo($resultado);

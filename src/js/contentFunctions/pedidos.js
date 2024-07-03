@@ -80,6 +80,7 @@ function listagem() {
           "targets": '_all',
           "defaultContent": ""
         }]})
+
     })
 
     .fail(function (jqXHR, textStatus) {
@@ -208,9 +209,12 @@ function guardaEdit(pedidoID, cozinhaID) {
 }
 
 
-function getFatura(pedidoID, cozinhaID) {
+function getFatura(pedidoID, cozinhaID,preco) {
+  $('#mesaFatura').val(pedidoID)
+
   let dados = new FormData();
   dados.append('cozinhaID', cozinhaID);
+  dados.append('pedidoID', pedidoID);
   dados.append('op', 11);
   $.ajax({
     url: controllerPath,
@@ -222,12 +226,14 @@ function getFatura(pedidoID, cozinhaID) {
     processData: false,
   })
     .done(function (msg) {
-      let obj = JSON.parse(msg);
-      $('#mesaFatura').val(pedidoID)
-      $('#precoFatura').val(obj[1].preco)
-      $('#faturaModal').modal('toggle');
-      console.log("error", obj)
-      $('#btnGuardarFatura').attr('onclick', 'guardaFatura(' + obj[0].idPedido + ', ' + obj[1].preco + ')')
+      $('#faturaModal').modal('show');
+
+      alerta("info", "Fatura para "+ msg+ " €")
+      $('#precoFatura').val(Number(msg))
+      
+    
+      $('#btnGuardarFatura').attr('onclick', 'guardaFatura(' + pedidoID + ',' + cozinhaID + ', ' + Number(msg) + ')')
+      
     })
 
     .fail(function (jqXHR, textStatus) {
@@ -236,11 +242,11 @@ function getFatura(pedidoID, cozinhaID) {
 }
 
 
-function guardaFatura(pedidoID, preco) {
-
+function guardaFatura(pedidoID,cozinhaID, preco) {
   let dados = new FormData();
 
-  dados.append('pedido', pedidoID);
+  dados.append('cozinhaID', cozinhaID);
+  dados.append('pedidoID', pedidoID);
   dados.append('preco', preco);
   dados.append('op', 12);
 

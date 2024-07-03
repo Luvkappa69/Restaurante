@@ -232,24 +232,50 @@
 
 
 
-        // function getDados($codigo) {
-        //     global $conn;
+                function edita(
+        $idCliente,
+        $idMesa,
+        $data,
+        $hora,
+        $estado,
+        $oldKEY) {
+            global $conn;
 
+            $msg = "";
+            $stmt = "";
 
-        //     $stmt = $conn->prepare("SELECT * FROM pratos WHERE id = ?");
-        //     $stmt->bind_param("i", $codigo);
-        //     $stmt->execute();
-    
-        //     $result = $stmt->get_result();
-        //     $row = $result->fetch_assoc();
+            $stmt = $conn->prepare("UPDATE reserva SET 
+                                    idCliente = ?,
+                                    idMesa = ?,
+                                    data = ?,
+                                    hora = ?,
+                                    estado = ?
+                                    WHERE id = ? ;");
 
-    
-        //     $stmt->close();
-        //     $conn->close();
+            if ($stmt) { 
+                $stmt->bind_param("iissii",
+                $idCliente,
+                $idMesa,
+                $data,
+                $hora,
+                $estado,
+                $oldKEY);
 
-            
-        //     return json_encode($row);  
-        // }
+                if ($stmt->execute()) {
+                    $msg = "Edição efetuada";
+                } else {
+                    $msg = "Erro ao editar: " . $stmt->error; 
+                }
+                $stmt->close(); 
+            } else {
+                $msg = "Erro ao preparar a declaração: " . $conn->error;  
+            }
+
+            $conn->close();
+
+            return $msg;
+
+        }
         
         
 

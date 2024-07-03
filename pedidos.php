@@ -39,8 +39,8 @@
 
           <h3>cozinha:</h3>
           <div class="col-md-6">
-              <label for="idTipo" class="form-label">Prato</label>
-              <select class="form-select select2" aria-label="Default select example" id="idTipo"></select>
+              <label for="pratoSelect" class="form-label">Prato</label>
+              <select class="form-select select2" aria-label="Default select example" id="pratoSelect"></select>
           </div>
           
          

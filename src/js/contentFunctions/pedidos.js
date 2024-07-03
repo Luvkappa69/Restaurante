@@ -4,7 +4,7 @@ let controllerPath = "src/controller/controllerPedidos.php"
 function regista() {
   if (
     $('#idMesa').val() == -1 ||
-    $('#idTipo').val() == -1
+    $('#pratoSelect').val() == -1
 
   ){
     return alerta("error", "Por favor preencha os campos ...");
@@ -12,7 +12,7 @@ function regista() {
 
   let dados = new FormData();
   dados.append('idMesa', $('#idMesa').val());
-  dados.append('idTipo', $('#idTipo').val());
+  dados.append('idTipo', $('#pratoSelect').val());
 
   dados.append('op', 1);
 
@@ -332,7 +332,7 @@ function getSelect_prato() {
   })
 
     .done(function (msg) {
-      $('#idTipo').html(msg);
+      $('#pratoSelect').html(msg);
       $('#idTipoEdit').html(msg);
     })
 
@@ -396,7 +396,7 @@ function getSelect_clientes() {
 $(function () {
   listagem();
   $('#tablePedidos').DataTable();
-  $('#idTipo').select2();
+  $('#pratoSelect').select2();
   $('#idMesa').select2();
   getSelect_mesa()
   getSelect_prato()

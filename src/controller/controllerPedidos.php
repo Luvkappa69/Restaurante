@@ -59,7 +59,7 @@ else if($_POST['op'] == 11){
     $resultado = $execute -> getFaturaPratoCozinha($_POST['cozinhaID']);
     echo($resultado);
 }
-else if($_POST['op'] == 11){
+else if($_POST['op'] == 12){
     $resultado = $execute -> emiteFatura(
                                             $_POST['pedido'], 
                                             $_POST['preco']

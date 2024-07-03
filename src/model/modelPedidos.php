@@ -19,7 +19,7 @@
             $stmt->bind_param("ii", $idMesa, $estadoPreset);
         
             if ($stmt->execute()) {
-                $maxIdPedido = $conn->insert_id;
+                $pedidoID = $conn->insert_id;
                 $msg = "Registado com sucesso: 'pedido' na";
             } else {
                 $msg = "Erro ao registar na tabela 'pedido': " . $stmt->error;
@@ -27,16 +27,13 @@
                 return $msg;
             }
             $stmt->close();
-        
+
 
 
 
 
             $stmt = $conn->prepare("INSERT INTO cozinha (idPedido, idPrato) VALUES (?, ?);");
-            if ($stmt === false) {
-                return "Erro ao preparar statement: " . $conn->error;
-            }
-            $stmt->bind_param("ii", $maxIdPedido, $idTipo);
+            $stmt->bind_param("ii", $pedidoID, $idTipo);
         
             if ($stmt->execute()) {
                 $msg .= "'cozinha'!";
@@ -255,20 +252,18 @@
             $stmt1->close();
 
             $presetEstado= 3;
-            $stmt2 = $conn->prepare("UPDATE pedido SET pedido.idEstado = ? WHERE id = ?");
-            $stmt2->bind_param("ii",$presetEstado, $row1['id']);
+            $stmt2 = $conn->prepare("UPDATE pedido SET pedido.idEstado = ? WHERE idEstado = ? and pedido.id= ?");
+            $stmt2->bind_param("iii",$presetEstado, $row1['idEstado'], $row1['id']);
             $stmt2->execute();
-            $result = $stmt2->get_result();
-            $row2 = $result->fetch_assoc();
             $stmt2->close();
 
 
-            $stmt3 = $conn->prepare("SELECT * FROM mesas WHERE idMesa = ?");
-            $stmt3->bind_param("i", $row2['idMesa']);
+            $stmt3 = $conn->prepare("SELECT * FROM mesas WHERE id = ?");
+            $stmt3->bind_param("i", $row1['idMesa']);
             $stmt3->execute();
             $result = $stmt3->get_result();
             $row3 = $result->fetch_assoc();
-            $stmt2->close();
+            $stmt3->close();
 
 
             $content =  "*************** FATURA ***************\n";
@@ -277,8 +272,8 @@
 
 
             $folderName = "faturas";
-            $fileName = md5($row1['idPrato']. date("YmdHis"));
-            $fileRoute= "$folderName/$fileName";
+            $fileName = md5($row1['id']. date("YmdHis"));
+            $fileRoute= "../$folderName/$fileName";
 
             if(!file_exists($folderName)) {
                 mkdir($folderName,0777, true);
@@ -526,15 +521,10 @@
 
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
-                    if ($row['id'] == 3){
-                        
-                    }else{
-                        $msg .= "<option value = '".$row['nif']."'>".$row['nome']." - ".$row['nif']." </option>";
-                    }
-                    
+                    $msg .= "<option value = '".$row['nif']."'>".$row['nome']." - ".$row['nif']." </option>";
                 }
             } else {
-                $msg .= "<option value = '-1'>Sem Estados</option>";
+                $msg .= "<option value = '-1'>Sem Pratos</option>";
             }
             $stmt->close(); 
             $conn->close();

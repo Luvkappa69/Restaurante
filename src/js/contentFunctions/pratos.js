@@ -156,8 +156,8 @@ function edita(key) {
       $('#idTipoEdit').val(obj.idTipo);
 
   
-      $('#editModal_cliente').modal('toggle');
-      $('#btnGuardarEdit_cliente').attr('onclick', 'guardaEdit_cliente(' + obj.nif + ')')
+      $('#editModal_pratos').modal('toggle');
+      $('#btnGuardarEdit_pratos').attr('onclick', 'guardaEdit(' + obj.nif + ')')
     })
  
     .fail(function (jqXHR, textStatus) {

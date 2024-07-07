@@ -28,7 +28,7 @@
             if($upload['flag']){
                 $stmt = $conn->prepare("INSERT INTO pratos (nome, preco, idTipo, foto) 
                 VALUES (?, ?, ?, ?);");
-                $stmt->bind_param("siis", 
+                $stmt->bind_param("sdis", 
                 $nome,
                 $preco,
                 $idTipo,

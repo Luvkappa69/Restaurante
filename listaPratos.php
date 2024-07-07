@@ -14,8 +14,6 @@
 </head>
 
 <body>
-    <!-- cation when removing items, PHP ERROR Pedidos-->
-    <h3>cation when removing items, PHP ERROR on Pedidos</h3>
     <?php include_once 'assets/main/navbar.php' ?>
     
     <div class="container">

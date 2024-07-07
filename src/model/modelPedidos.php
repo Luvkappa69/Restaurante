@@ -359,15 +359,16 @@
 
 
             $content = "*************** FATURA ***************\n";
-            $content .= "                ".md5($row1['id'] . date("YmdHis"))." \n";
+            $content .= "      Hash sha256 on (pedido:".$row1['id'] . "  - timestamp:". date("YmdHis")."):\n";
+            $content .= "         hash -> ". hash('sha256',$row1['id'] . date("YmdHis"))." \n\n";
             $content .= "*************** MESA ***************\n";
-            $content .= "                ".$row3['nome'] . "\n";
+            $content .= "                ".$row3['nome'] . "\n\n";
             $content .= "*************** Pedido **************\n";
-            $content .= "                ".$row1['id'] . "\n";
+            $content .= "                ".$row1['id'] . "\n\n";
             $content .= "*************** Preco ***************\n";
-            $content .= "                ".$row4['precoPrato'] . "\n";
+            $content .= "                ".$row4['precoPrato'] . "€\n\n";
             $content .= "*************** Nif ***************\n";
-            $content .= "                ".$clienteFatura . "\n";
+            $content .= "                ".$clienteFatura . "\n\n";
 
 
             

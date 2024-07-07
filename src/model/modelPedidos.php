@@ -99,14 +99,62 @@
                 if ($stmt->execute()) {
                     $result = $stmt->get_result(); 
                     while ($row = $result->fetch_assoc()) {
+
+
+
+
+
+                        //get numero da mesa - before table creation
+                        $stmt_ForMesa = $conn->prepare("SELECT 
+                        pedido.*, 
+                        pedido.id as pedidoID, 
+                        cozinha.id as cozinhaID,
+                        cozinha.idPrato as pratoID,
+                        mesas.nome as nomeMesa, 
+                        estadopedido.descricao as descEstado,
+                        pratos.preco as precoPrato
+                        FROM 
+                        pedido, 
+                        cozinha, 
+                        mesas, 
+                        estadopedido,
+                        pratos
+                        WHERE 
+                        pedido.idMesa = mesas.id 
+                        AND pedido.idEstado = estadopedido.id
+                        AND cozinha.idPedido = pedido.id
+                        AND cozinha.idPrato = pratos.id
+                        AND pedido.id = ?");
+
+
+                        $stmt_ForMesa->bind_param("i", $row['pedidoID']);
+                        $stmt_ForMesa->execute();
+                        $result_cozinha = $stmt_ForMesa->get_result();
+                        $row_cozinha = $result_cozinha->fetch_assoc();
+                        $preco = $row_cozinha['idMesa'];
+                        $stmt_ForMesa->close();
+
+
+
+
+
+                        //continue the rest of the table... adding mesa on getfatura()
                         $msg .= "<tr>";
                         $msg .= "<td>" . $row['pedidoID'] . "</td>";
                         $msg .= "<td>" . $row['cozinhaID'] . "</td>";
                         $msg .= "<td>" . $row['nomeMesa'] . "</td>";
                         $msg .= "<td>" . $row['descEstado'] . "</td>";
-                        $msg .= "<td><button type='button' class='btn btn-danger' onclick='remover(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Remover</button></td>";
-                        $msg .= "<td><button type='button' class='btn btn-primary' onclick='edita(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Editar</button></td>";
-                        $msg .= "<td><button type='button' class='btn btn-secondary' onclick='getFatura(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Faturar</button></td>";
+
+                        if ($row['descEstado'] == "Finalizado" ){
+                            $msg .= "<td><button type='button' class='btn btn-danger' disabled >Remover</button></td>";
+                            $msg .= "<td><button type='button' class='btn btn-primary' onclick='edita(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Editar</button></td>";
+                            $msg .= "<td><button type='button' class='btn btn-secondary' disabled >Faturar</button></td>";
+
+                        }else{
+                            $msg .= "<td><button type='button' class='btn btn-danger' onclick='remover(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Remover</button></td>";
+                            $msg .= "<td><button type='button' class='btn btn-primary' onclick='edita(" . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Editar</button></td>";
+                            $msg .= "<td><button type='button' class='btn btn-secondary' onclick='getFatura(" . $row['idMesa'] . "," . $row['pedidoID'] . ", " . $row['cozinhaID'] . ")'>Faturar</button></td>";
+                        }
                         $msg .= "</tr>";
                     }
                 } else {
@@ -250,10 +298,10 @@
         }
         
         
-        function emiteFatura($cozinhaID,$pedidoID, $preco){
+        function emiteFatura($clienteFatura, $cozinhaID,$pedidoID, $preco){
             global $conn;
             $stmt1 = "";
-            $stmt2 = "";
+
             //get estado pedido
             $stmt1 = $conn->prepare("SELECT * FROM pedido WHERE id = ?");
             $stmt1->bind_param("i", $pedidoID);
@@ -261,16 +309,14 @@
             $result = $stmt1->get_result();
             $row1 = $result->fetch_assoc();
             $stmt1->close();
-            echo("Modificação de estado :".$row1['idEstado'] . "para >>> Finalizado");
 
 
-            $presetEstado= 3;
-            $stmt2 = $conn->prepare("UPDATE pedido SET pedido.idEstado = ? WHERE idEstado = ? and pedido.id= ?");
-            $stmt2->bind_param("iii",$presetEstado, $row1['idEstado'], $row1['id']);
-            $stmt2->execute();
-            $stmt2->close();
-
-
+            if ($row1['idEstado'] == 3){
+                return "O Pedido já foi finalizado...";
+            }
+            
+            //get mesa
+            $stmt3 = "";
             $stmt3 = $conn->prepare("SELECT * FROM mesas WHERE id = ?");
             $stmt3->bind_param("i", $row1['idMesa']);
             $stmt3->execute();
@@ -279,6 +325,8 @@
             $stmt3->close();
 
 
+            //get preco do prato
+            $stmt4 = "";
             $stmt4 = $conn->prepare("SELECT 
                     pedido.*, 
                     pedido.id as pedidoID, 
@@ -299,7 +347,6 @@
                     AND cozinha.idPedido = pedido.id
                     AND cozinha.idPrato = pratos.id
                     AND pedido.id = ?;");
-
             $stmt4->bind_param("i", $pedidoID);
             $stmt4->execute();
             $result = $stmt4->get_result();
@@ -307,18 +354,25 @@
             $stmt4->close();
 
 
+
+            
+
+
             $content = "*************** FATURA ***************\n";
+            $content .= "                ".md5($row1['id'] . date("YmdHis"))." \n";
             $content .= "*************** MESA ***************\n";
             $content .= "                ".$row3['nome'] . "\n";
             $content .= "*************** Pedido **************\n";
             $content .= "                ".$row1['id'] . "\n";
             $content .= "*************** Preco ***************\n";
             $content .= "                ".$row4['precoPrato'] . "\n";
+            $content .= "*************** Nif ***************\n";
+            $content .= "                ".$clienteFatura . "\n";
 
 
             
             $folderName = '../faturas';
-            $fileName = md5($row1['id'] . date("YmdHis")) . ".txt"; 
+            $fileName = md5($row1['id'] . date("YmdHis")) . ".txt";
             $fileRoute = $folderName . '/' . $fileName;
 
             if (!file_exists($folderName)) {
@@ -331,16 +385,21 @@
             }
 
             if (file_put_contents($fileRoute, $content) !== false) {
-                echo "Fatura Emitida";
+                echo "Fatura Emitida >> ";
             } else {
                 echo "Erro na Emissao da Fatura";
                 $error = error_get_last();
                 echo "Error details: " . $error['message'];
             }
 
-            echo "File path: " . $fileRoute;
-
-
+            //UPDATE estado pedido 
+            $stmt2 = "";
+            $presetEstado= 3;
+            $stmt2 = $conn->prepare("UPDATE pedido SET pedido.idEstado = ? WHERE idEstado = ? and pedido.id= ?");
+            $stmt2->bind_param("iii",$presetEstado, $row1['idEstado'], $row1['id']);
+            $stmt2->execute();
+            $stmt2->close();
+            echo("Estado do pedido atualizado com sucesso");
 
         }
 

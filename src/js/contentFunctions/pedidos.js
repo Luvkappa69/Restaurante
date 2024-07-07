@@ -200,6 +200,7 @@ function guardaEdit(pedidoID, cozinhaID) {
     .done(function (msg) {
       alerta("success", msg);
       listagem();
+      $('#editModal').modal('toggle');
     })
 
     .fail(function (jqXHR, textStatus) {
@@ -209,9 +210,10 @@ function guardaEdit(pedidoID, cozinhaID) {
 }
 
 
-function getFatura(pedidoID, cozinhaID,preco) {
-  $('#mesaFatura').val(pedidoID)
+function getFatura(idMesa,pedidoID, cozinhaID) {
+  $('#mesaFatura').val(idMesa)
 
+  
   let dados = new FormData();
   dados.append('cozinhaID', cozinhaID);
   dados.append('pedidoID', pedidoID);
@@ -231,8 +233,10 @@ function getFatura(pedidoID, cozinhaID,preco) {
       alerta("info", "Fatura para "+ msg+ " €")
       $('#precoFatura').val(Number(msg))
       
-    
+
       $('#btnGuardarFatura').attr('onclick', 'guardaFatura(' + pedidoID + ',' + cozinhaID + ', ' + Number(msg) + ')')
+
+    
       
     })
 
@@ -242,9 +246,15 @@ function getFatura(pedidoID, cozinhaID,preco) {
 }
 
 
-function guardaFatura(pedidoID,cozinhaID, preco) {
-  let dados = new FormData();
 
+function guardaFatura(pedidoID,cozinhaID, preco) {
+
+  let dados = new FormData();
+  if ( $('#clienteFatura').val() == -1){
+    alerta("error", "Por favor selecione um cliente")
+    return
+  }
+  dados.append('clienteFatura', $('#clienteFatura').val());
   dados.append('cozinhaID', cozinhaID);
   dados.append('pedidoID', pedidoID);
   dados.append('preco', preco);
@@ -264,10 +274,11 @@ function guardaFatura(pedidoID,cozinhaID, preco) {
     .done(function (msg) {
       alerta("success", msg);
       listagem();
+      $('#faturaModal').modal('toggle');
     })
 
     .fail(function (jqXHR, textStatus) {
-      alert("Request failed: " + textStatus);
+      alert("error", "Request failed: " + textStatus);
     });
 
 }

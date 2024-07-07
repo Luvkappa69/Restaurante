@@ -64,6 +64,7 @@ else if($_POST['op'] == 11){
 }
 else if($_POST['op'] == 12){
     $resultado = $execute -> emiteFatura(
+                                            $_POST['clienteFatura'], 
                                             $_POST['cozinhaID'], 
                                             $_POST['pedidoID'], 
                                             $_POST['preco']

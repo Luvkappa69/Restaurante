@@ -1,43 +1,41 @@
 <?php
 
 require_once 'utilities/connection.php';
+require_once 'utilities/sha256Edit.php';
 
+class Login {
 
-class Login{
+    private $encryptionKey = 'your-encryption-key'; 
 
     function registaUser($username, $pw, $foto, $tpUser){
-    
         global $conn;
         $msg = "";
         $state = false;
 
         $folder = md5(hash('sha256', $username));
-        $upload = $this -> uploads(
-            $foto,                    //Content
-            'foto',            //Js into PHP variable name
-            "_FOTO",                  //Nome do ficheiro
-            $folder                   //Pasta
-            );
+        $upload = $this->uploads($foto, 'foto', "_FOTO", $folder);
         $upload = json_decode($upload, TRUE);
 
         $templatePic = "src/img/user/user.webp";
         
-        $pw = hash('sha256', $pw); 
+        // Encrypt the password
+        $encryptedPassword = encryptAES256($pw, $this->encryptionKey);
+
         if($upload['flag']){
-            $stmt = $conn->prepare("INSERT INTO utilizador (user, pw, idtuser, foto) 
-            VALUES (?, ?, ?, ?);");
-            $stmt->bind_param("ssis", $username, $pw, $tpUser, $upload['target']);
-        }else{
-            $stmt = $conn->prepare("INSERT INTO utilizador (user, pw, idtuser, foto) 
-            VALUES (?, ?, ?, ?);");
-            $stmt->bind_param("ssis", $username, $pw, $tpUser, $templatePic);
+            $stmt = $conn->prepare("INSERT INTO utilizador (user, pw, idtuser, foto) VALUES (?, ?, ?, ?);");
+            $stmt->bind_param("ssis", $username, $encryptedPassword, $tpUser, $upload['target']);
+        } else {
+            $stmt = $conn->prepare("INSERT INTO utilizador (user, pw, idtuser, foto) VALUES (?, ?, ?, ?);");
+            $stmt->bind_param("ssis", $username, $encryptedPassword, $tpUser, $templatePic);
         }
 
-        $stmt->execute();
+        if ($stmt->execute()) {
+            $msg = "Registado com sucesso!";
+            $state = true;
+        } else {
+            $msg = "Erro ao registar!";
+        }
 
-        $msg = "Registado com sucesso!";
-        $state = true;
-        
         $resp = json_encode(array(
             "flag" => $state,
             "msg" => $msg
@@ -46,51 +44,54 @@ class Login{
         $stmt->close();
         $conn->close();
 
-        return($resp);
-
+        return $resp;
     }
 
     function login($username, $pw){
-        
-
         global $conn;
         $msg = "";
         $flag = true;
         session_start();
 
-        $pw = hash('sha256', $pw); 
-
-        $stmt = $conn->prepare("SELECT * FROM utilizador WHERE user LIKE ? AND pw LIKE ?;");
-        $stmt->bind_param("ss", $username, $pw);
+        $stmt = $conn->prepare("SELECT * FROM utilizador WHERE user = ?;");
+        $stmt->bind_param("s", $username);
         $stmt->execute();
 
         $result = $stmt->get_result();
 
         if($result->num_rows > 0){
             $row = $result->fetch_assoc();
-            $msg = "Bem vindo, ".$row['user'];
-            $_SESSION['utilizador'] = $row['user'];
-            $_SESSION['tipo'] = $row['idtuser'];
-            $_SESSION['foto'] = $row['foto'];
-        }else{
+            
+            // Decrypt the stored password
+            $decryptedPassword = decryptAES256($row['pw'], $this->encryptionKey);
+            //check if user password input == decrypted password
+            if ($pw === $decryptedPassword) {
+                $msg = "Bem vindo, " . $row['user'];
+                $_SESSION['utilizador'] = $row['user'];
+                $_SESSION['tipo'] = $row['idtuser'];
+                $_SESSION['foto'] = $row['foto'];
+
+                date_default_timezone_set('Europe/Lisbon');
+                $current_time = date('Y-m-d H:i:s');
+                $log = $row['id'] . "-" . $row['user'] . "-" . $current_time;
+
+                $this->log_Login($log);
+            } else {
+                $flag = false;
+                $msg = "Erro! Dados Inválidos"; 
+            }
+        } else {
             $flag = false;
             $msg = "Erro! Dados Inválidos"; 
         }
 
         $stmt->close();
         $conn->close();
-        
-        //log_login - set params and time
-        date_default_timezone_set('Europe/Lisbon');
-        $current_time = date('Y-m-d H:i:s');
-        $log = $row['id']."-".$row['user']."-".$current_time;
 
-        $this -> log_Login($log);
-
-        return (json_encode(array(
+        return json_encode(array(
             "msg" => $msg,
             "flag" => $flag
-        )));
+        ));
     }
 
     function logout(){
@@ -154,7 +155,7 @@ class Login{
                     $target = $dir.$newName;
                     $targetBD = $dir1.$newName;
     
-                    $this -> wFicheiro($target);
+                    $this -> log_Login($target);
             
                     $flag = move_uploaded_file($fonte, $target);
                     
@@ -167,16 +168,6 @@ class Login{
         )));
     }
     
-    function wFicheiro($texto){
-        $file = '../logs.txt';
-        if (file_exists($file)) {
-            $current = file_get_contents($file);
-        } else {
-            $current = '';
-        }
-        $current .= $texto."\n";
-        file_put_contents($file, $current);
-    }
 
     function log_Login($texto){
         $file = '../login_logs.txt';

@@ -1,0 +1,187 @@
+.removeBtn {
+  border-radius: 20px;
+  border: 0px;
+  background-image: linear-gradient(to top, hsl(268, 53%, 38%) 0%, rgb(101, 78, 202) 25%,rgb(71, 124, 223) 75%, hsl(194, 54%, 55%) 100%);  padding: 10px 15px; 
+  position: relative;
+  display: inline-block;
+  text-align: center; 
+  min-width: 25px; 
+  transition: min-width 0.3s ease; 
+}
+.removeBtn img {
+  width: 25px; 
+  height: auto;
+  vertical-align: middle; 
+}
+.removeBtn .remover-text {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 3px;
+}
+.removeBtn:hover {
+  min-width: 120px; 
+  background: linear-gradient(to right, rgba(129, 69, 62, 0.979), rgb(219, 41, 41));
+  box-shadow: 0px 0px 15px 5px rgb(207, 46, 86);
+}
+.removeBtn:hover img {
+  opacity: 0; 
+}
+.removeBtn:hover .remover-text {
+  display: block; 
+}
+.removeBtn:active {
+  background-color: brown;
+}
+.removeBtn:active .remover-text{
+padding-top: 5px;
+}
+
+
+
+
+.editBtn {
+  border-radius: 20px;
+  border: 0px;
+  background-image: linear-gradient(to top, hsl(268, 53%, 38%) 0%, rgb(101, 78, 202) 25%,rgb(71, 124, 223) 75%, hsl(194, 54%, 55%) 100%);  padding: 10px 15px; 
+  position: relative;
+  display: inline-block;
+  text-align: center; 
+  min-width: 25px; 
+  transition: min-width 0.3s ease;
+}
+.editBtn img {
+  width: 25px; 
+  height: auto;
+  vertical-align: middle; 
+}
+.editBtn .edit-text {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 3px;
+}
+.editBtn:hover {
+  min-width: 120px; 
+  background: linear-gradient(to right, rgba(56, 154, 167, 0.979),rgb(64, 101, 223));
+  box-shadow: 0px 0px 15px 5px rgb(46, 129, 207);
+}
+.editBtn:hover img {
+  opacity: 0; 
+}
+.editBtn:hover .edit-text {
+  display: block; 
+  color:rgb(177, 209, 223);
+}
+.editBtn:active {
+  background-color: rgb(42, 110, 165);
+}
+.editBtn:active .edit-text{
+padding-top: 5px;
+}
+
+
+
+.favBtn {
+  border-radius: 20px;
+  border: 0px;
+  background-image: linear-gradient(to top, hsl(268, 53%, 38%) 0%, rgb(101, 78, 202) 25%,rgb(71, 124, 223) 75%, hsl(194, 54%, 55%) 100%);  padding: 10px 15px; 
+  position: relative;
+  display: inline-block;
+  text-align: center; 
+  min-width: 25px; 
+  transition: min-width 0.3s ease;
+}
+.favBtn img {
+  width: 25px; 
+  height: auto;
+  vertical-align: middle; 
+}
+.favBtn .fav-text {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 3px;
+}
+.favBtn:hover {
+  min-width: 120px; 
+  background: linear-gradient(to right, rgba(160, 167, 56, 0.979),rgb(223, 199, 64));
+  box-shadow: 0px 0px 15px 5px rgb(217, 219, 88);
+}
+.favBtn:hover img {
+  opacity: 0; 
+}
+.favBtn:hover .fav-text {
+  display: block; 
+  color:rgb(104, 90, 53);
+}
+.favBtn:active {
+  background-color: rgb(42, 110, 165);
+}
+.favBtn:active .fav-text{
+padding-top: 5px;
+}
+
+
+
+
+
+.logoutBtn {
+  border-radius: 20px;
+  border: 0px;
+  background-image: linear-gradient(to top, hsl(268, 53%, 38%) 0%, rgb(101, 78, 202) 25%,rgb(71, 124, 223) 75%, hsl(194, 54%, 55%) 100%);  padding: 10px 15px; 
+  position: relative;
+  display: inline-block;
+  text-align: center; 
+  min-width: 25px; 
+  transition: min-width 0.3s ease;
+}
+.logoutBtn img {
+  width: 25px; 
+  height: auto;
+  vertical-align: middle; 
+}
+.logoutBtn .logout-text {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 3px;
+}
+.logoutBtn:hover {
+  min-width: 120px; 
+  background: linear-gradient(to right, rgba(151, 151, 151, 0.979), rgb(104, 104, 104));
+  box-shadow: 0px 0px 15px 5px rgb(107, 101, 103);
+}
+.logoutBtn:hover img {
+  opacity: 0; 
+}
+.logoutBtn:hover .logout-text {
+  display: block; 
+  color:rgb(0, 0, 0);
+}
+.logoutBtn:active {
+  background-color: rgb(42, 110, 165);
+}
+.logoutBtn:active .logout-text{
+padding-top: 5px;
+}

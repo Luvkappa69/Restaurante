@@ -4,12 +4,7 @@
 
     class Prato{
 
-        function regista(
-                                $nome,
-                                $preco,
-                                $idTipo,
-                                $foto
-                                ) {
+        function regista($nome,$preco,$idTipo,$foto) {
             global $conn;
             $msg = "";
             $stmt = "";
@@ -37,18 +32,10 @@
                 $stmt = $conn->prepare("INSERT INTO pratos (nome, preco, idTipo)
             VALUES (?, ?, ?)");
         
-            $stmt->bind_param("sii", 
-                                    $nome,
-                                    $preco,
-                                    $idTipo
-                                        );
+            $stmt->bind_param("sii", $nome,$preco,$idTipo);
             }
 
 
-
-        
-         
-            
             if ($stmt->execute()) {
                 $msg = "Registado com sucesso!";
             } else {
@@ -56,12 +43,9 @@
             } 
 
             $stmt->close();
-                
-
-            
           
-            
-            
+
+
             $conn->close();
             return $msg;
         }
@@ -235,13 +219,7 @@
 
 
 
-        function edita(
-                        $nome,
-                        $preco,
-                        $idTipo,
-                        $foto,
-                        $oldKEY
-                        ) {
+        function edita($nome,$preco,$idTipo,$foto,$oldKEY) {
             global $conn;
           
             $msg = "";
@@ -256,7 +234,7 @@
             $upload = json_decode($upload, TRUE);
 
 
-            if($resp['flag']){
+            if($upload['flag']){
                 
                 $stmt = $conn->prepare("UPDATE pratos SET 
                                     nome = ?,
@@ -266,12 +244,7 @@
                                     WHERE id_imovel = ? ;");
         
  
-                $stmt->bind_param("siisi", 
-                $nome,
-                $preco,
-                $idTipo,
-                $resp['target'],
-                $oldKEY);
+                $stmt->bind_param("siisi", $nome,$preco,$idTipo,$resp['target'],$oldKEY);
             
             }else{
                 $stmt = $conn->prepare("UPDATE pratos SET 
@@ -282,11 +255,7 @@
                                     WHERE id = ? ;");
         
     
-                $stmt->bind_param("siii", 
-                $nome,
-                $preco,
-                $idTipo,
-                $oldKEY);
+                $stmt->bind_param("siii", $nome,$preco,$idTipo,$oldKEY);
             }
         
             if ($stmt->execute()) {
@@ -352,7 +321,6 @@
                         $this -> wFicheiro($target);
                 
                         $flag = move_uploaded_file($fonte, $target);
-                        
                     } 
                 }
             }

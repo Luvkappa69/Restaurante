@@ -60,26 +60,29 @@ class Login {
         $result = $stmt->get_result();
 
         if($result->num_rows > 0){
-            $row = $result->fetch_assoc();
+            while($row = $result->fetch_assoc()){
+                // Decrypt the stored password
+                $decryptedPassword = decryptAES256($row['pw'], $this->encryptionKey);
+                //check if user password input == decrypted password
+                if ($pw == $decryptedPassword) {
+                    $msg = "Bem vindo, " . $row['user'];
+                    $_SESSION['utilizador'] = $row['user'];
+                    $_SESSION['tipo'] = $row['idtuser'];
+                    $_SESSION['foto'] = $row['foto'];
+
+                    date_default_timezone_set('Europe/Lisbon');
+                    $current_time = date('Y-m-d H:i:s');
+                    $log = $row['id'] . "-" . $row['user'] . "-" . $current_time;
+
+                    $this->log_Login($log);
+                } else {
+                    $flag = false;
+                    $msg = "Erro! Dados Inválidos"; 
+                };
+
+            };
             
-            // Decrypt the stored password
-            $decryptedPassword = decryptAES256($row['pw'], $this->encryptionKey);
-            //check if user password input == decrypted password
-            if ($pw === $decryptedPassword) {
-                $msg = "Bem vindo, " . $row['user'];
-                $_SESSION['utilizador'] = $row['user'];
-                $_SESSION['tipo'] = $row['idtuser'];
-                $_SESSION['foto'] = $row['foto'];
-
-                date_default_timezone_set('Europe/Lisbon');
-                $current_time = date('Y-m-d H:i:s');
-                $log = $row['id'] . "-" . $row['user'] . "-" . $current_time;
-
-                $this->log_Login($log);
-            } else {
-                $flag = false;
-                $msg = "Erro! Dados Inválidos"; 
-            }
+           
         } else {
             $flag = false;
             $msg = "Erro! Dados Inválidos"; 

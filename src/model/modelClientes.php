@@ -4,13 +4,7 @@
 
     class Cliente{
 
-        function regista(
-                                $nif,
-                                $nome,
-                                $morada,
-                                $telefone,
-                                $email
-                                ) {
+        function regista($nif,$nome,$morada,$telefone,$email) {
             global $conn;
             $msg = "";
             $stmt = "";
@@ -24,13 +18,7 @@
                 $stmt = $conn->prepare("INSERT INTO clientes (nif, nome, morada, telefone, email) 
                 VALUES (?, ?, ?, ?, ?)");
             
-                $stmt->bind_param("issis", 
-                                            $nif,
-                                            $nome,
-                                            $morada,
-                                            $telefone,
-                                            $email
-                                            );
+                $stmt->bind_param("issis", $nif,$nome,$morada,$telefone,$email);
             
                 if ($stmt->execute()) {
                     $msg = "Registado com sucesso!";
